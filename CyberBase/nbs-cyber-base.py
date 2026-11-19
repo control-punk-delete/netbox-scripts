@@ -19,7 +19,7 @@ class GoogleSheetUpdate(Script):
 
 
     def append_row(self, gs_service, spreadsheet_id, page_name, rows):
-        body = { "values": rows }
+        body = { "values": [rows] }
 
         try:
             result = gs_service.spreadsheets().values().append(
@@ -144,7 +144,7 @@ class GoogleSheetUpdate(Script):
                 'kontrol', 
                 'comment'
                 ]
-        self.log_info(f"Row that should be append: row")
+        self.log_info(f"Row that should be append: {row}")
         self.append_row(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME, row)
 
         
