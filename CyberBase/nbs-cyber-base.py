@@ -66,29 +66,27 @@ class GoogleSheetUpdate(Script):
 
     def run(self, data, commit):
         # 1. Google AUTH data        
-        GOOGLE_TOKEN = data.get("google_api_token", None)
+        # 1. Google API Token
+        GOOGLE_TOKEN = data.get("google_api_token")
 
         if not GOOGLE_TOKEN:
             raise AbortScript('Missing required attribute: {"google_api_token": "token"}')
 
-        self.log_debug(GOOGLE_TOKEN)
-        GOOGLE_TOKEN = json.dumps(GOOGLE_TOKEN)
-        
-        # 2. Shreadsheet information and login
-        SPREADSHEET_ID = data.get("gs_table_id", None)
-        if not SPREADSHEET_ID:
-            raise AbortScript('Missing required attribute: {"gs_table_id": ""}')
-        self.log_debug(SPREADSHEET_ID)
+        try:
+            token_info = json.loads(GOOGLE_TOKEN) if isinstance(GOOGLE_TOKEN, str) else GOOGLE_TOKEN
+        except json.JSONDecodeError:
+            raise AbortScript("Invalid Google API token JSON format")
 
-        GOOGLE_TOKEN = json.loads(GOOGLE_TOKEN)
-        self.log_debug("Google Token Loaded")
-        GOOGLE_CREDS = Credentials.from_authorized_user_info(
+        GS_CREAD = Credentials.from_authorized_user_info(
             token_info,
             scopes=["https://www.googleapis.com/auth/spreadsheets"]
         )
+        
+        GS_SERVICE = build("sheets", "v4", credentials=credentials)
 
-        GS_SERVICE = build("sheets", "v4", credentials=GOOGLE_CREDS)
-        self.log_debug("Google Service created")
+        # 2. Spreadsheet information
+        SPREADSHEET_ID = data.get("gs_table_id")
+
 
         # 3. Data about Asset
         ip_id = data.get('id')
