@@ -120,10 +120,10 @@ class GoogleSheetUpdate(Script):
         GS_INFO = GS_SERVICE.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
         self.log_debug(f"Google Sheet Info: {GS_INFO}")
 
-        GS_PAGE = (page["properties"]["title"] for page in GS_INFO.get("sheets") if page["properties"]["title"] == REGION_PAGE_NAME)
-        self.log_debug(*GS_PAGE)
+        GS_PAGE = { page["properties"]["title"] for page in GS_INFO.get("sheets", [])}
+        self.log_debug(GS_PAGE)
 
-        if not GS_PAGE:
+        if REGION_PAGE_NAME not in GS_PAGE:
             self.create_gs_page(REGION_PAGE_NAME, SPREADSHEET_ID)
 
         # 5.1 Перевірка хедера
