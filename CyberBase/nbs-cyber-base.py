@@ -81,8 +81,8 @@ class GoogleSheetUpdate(Script):
             token_info,
             scopes=["https://www.googleapis.com/auth/spreadsheets"]
         )
-        
-        GS_SERVICE = build("sheets", "v4", credentials=credentials)
+
+        GS_SERVICE = build("sheets", "v4", credentials=GS_CREAD)
 
         # 2. Spreadsheet information
         SPREADSHEET_ID = data.get("gs_table_id")
