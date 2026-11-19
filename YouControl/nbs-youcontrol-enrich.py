@@ -15,6 +15,10 @@ class YouControlEnrichment(Script):
         scheduling_enabled = False
 
     def youcontrol_search_by_edrpou(self, edrpou: str = None):
+        proxies = {
+            "http": "http://176.101.220.90:8090"
+        }
+        
         if not edrpou:
             raise Exception("Missing edrpou argument")
 
@@ -28,7 +32,7 @@ class YouControlEnrichment(Script):
             "Chrome/148.0.0.0 Safari/537.36"
             )
         }
-        data = requests.get(full_url, headers=headers)
+        data = requests.get(full_url, headers=headers, proxies=proxies, timeout=15)
 
         if data.status_code == 404:
             return None
