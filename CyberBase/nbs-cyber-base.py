@@ -128,11 +128,11 @@ class GoogleSheetUpdate(Script):
 
         # 5.1 Перевірка хедера
         GS_PAGE_HEADER = GS_SERVICE.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID, range=f"{REGION_PAGE_NAME}!1:1").execute()
-        GS_PAGE_HEADER_VALUES = page_headers_range.get("values")
+        GS_PAGE_HEADER_VALUES = GS_PAGE_HEADER.get("values")
         self.log.debug(GS_PAGE_HEADER_VALUES)
 
-        if not page_headers_values:
-           self.log_warning(f"Page {page_title} missing header row")
+        if not GS_PAGE_HEADER_VALUES:
+           self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
            self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
         
         # 6. Format new row that should be append
