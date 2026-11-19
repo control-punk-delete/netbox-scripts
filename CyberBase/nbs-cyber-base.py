@@ -99,7 +99,7 @@ class GoogleSheetUpdate(Script):
             raise AbortScript('IP Address do not belong to any Tenant')
 
         tenant_id = data.get('tenant').get('id')
-        
+
         TENANT_OBJECT = Tenant.objects.get(pk=tenant_id)
         self.log_debug(f"Tenant object extracted: {TENANT_OBJECT}")
 
@@ -118,7 +118,10 @@ class GoogleSheetUpdate(Script):
         self.log_info(f"Google Sheet page name: {REGION_PAGE_NAME}")
 
         GS_INFO = GS_SERVICE.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+        self.log_debug(f"Google Sheet Info: {GS_INFO}")
+
         GS_PAGE = (page["properties"]["title"] for page in GS_INFO.get("sheets") if page["properties"]["title"] == REGION_PAGE_NAME)
+        self.log_debug(*GS_PAGE)
 
         if not GS_PAGE:
             self.create_gs_page(REGION_PAGE_NAME, SPREADSHEET_ID)
