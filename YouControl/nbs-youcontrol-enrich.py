@@ -16,7 +16,8 @@ class YouControlEnrichment(Script):
 
     def youcontrol_search_by_edrpou(self, edrpou: str = None):
         proxies = {
-            "http": "http://176.101.220.90:8090"
+            "http": "http://31.148.207.153:80",
+            "https": "http://31.148.207.153:80"
         }
         
         if not edrpou:
