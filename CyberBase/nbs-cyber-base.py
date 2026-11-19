@@ -18,11 +18,11 @@ class GoogleSheetUpdate(Script):
             scheduling_enabled = False
 
 
-    def append_row(self, spreadsheet_id, page_name, rows):
+    def append_row(self, gs_service, spreadsheet_id, page_name, rows):
         body = { "values": rows }
 
         try:
-            result = self.GS_SERVICE.spreadsheets().values().append(
+            result = gs_service.spreadsheets().values().append(
                 spreadsheetId=spreadsheet_id,
                 range=f"{page_name}",
                 valueInputOption="USER_ENTERED",
@@ -35,16 +35,16 @@ class GoogleSheetUpdate(Script):
             raise AbortScript(f"An error occurred: {error}")
 
 
-    def create_header(self, page_name, spreadsheet_id):
+    def create_header(self, gs_service, spreadsheet_id, page_name):
         try:
-            self.GS_SERVICE.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=f"{page_name}!1:1", valueInputOption="RAW", body={"values": [['edrpou', 'org', 'ip', 'region', 'moniker', 'kontrol', 'comment']]}).execute()
+            gs_service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=f"{page_name}!1:1", valueInputOption="RAW", body={"values": [['edrpou', 'org', 'ip', 'region', 'moniker', 'kontrol', 'comment']]}).execute()
             self.log_success(f"Page header successfully added to page: {page_name}")
         
         except HttpError as error:
             raise AbortScript(f"Error during added header row to page {page_name}: {error}")
 
 
-    def create_gs_page(self, page_name, spreadsheet_id):
+    def create_gs_page(self, gs_service, spreadsheet_id, page_name):
         body = {
         "requests": [
             {
@@ -58,7 +58,7 @@ class GoogleSheetUpdate(Script):
         }
 
         try:
-            self.GS_SERVICE.spreadsheets().batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
+            gs_service.spreadsheets().batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
             self.log_success(f"Page {page_name} successfully created")
 
         except HttpError as error:
@@ -124,7 +124,7 @@ class GoogleSheetUpdate(Script):
         self.log_debug(GS_PAGE)
 
         if REGION_PAGE_NAME not in GS_PAGE:
-            self.create_gs_page(REGION_PAGE_NAME, SPREADSHEET_ID)
+            self.create_gs_page(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
 
         # 5.1 Перевірка хедера
         GS_PAGE_HEADER = GS_SERVICE.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID, range=f"{REGION_PAGE_NAME}!1:1").execute()
@@ -133,7 +133,7 @@ class GoogleSheetUpdate(Script):
 
         if not page_headers_values:
            self.log_warning(f"Page {page_title} missing header row")
-           self.create_header(REGION_PAGE_NAME, SPREADSHEET_ID)
+           self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
         
         # 6. Format new row that should be append
         row = [ TENANT_OBJECT.cf.get("edrpou", None),
@@ -145,7 +145,7 @@ class GoogleSheetUpdate(Script):
                 'comment'
                 ]
         self.log_info(f"Row that should be append: row")
-        self.append_row(SPREADSHEET_ID, REGION_PAGE_NAME, row)
+        self.append_row(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME, row)
 
         
         
