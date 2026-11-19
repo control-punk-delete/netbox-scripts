@@ -95,10 +95,11 @@ class GoogleSheetUpdate(Script):
 
 
         # 4. Organization data
-        if data.get('tenant'):
-            tenant_id = data.get('tenant').get('id')
+        if not data.get('tenant'):
             raise AbortScript('IP Address do not belong to any Tenant')
 
+        tenant_id = data.get('tenant').get('id')
+        
         TENANT_OBJECT = Tenant.objects.get(pk=tenant_id)
         self.log_debug(f"Tenant object extracted: {TENANT_OBJECT}")
 
