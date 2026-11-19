@@ -137,7 +137,7 @@ class GoogleSheetUpdate(Script):
         
         # 6. Format new row that should be append
         row = [ TENANT_OBJECT.cf.get("edrpou", None),
-                TENANT_OBJECT.name,
+                TENANT_OBJECT.description,
                 str(IP_ADDRESS_OBJECT.address).split("/")[0],
                 REGION_NAME,
                 'moniker',
