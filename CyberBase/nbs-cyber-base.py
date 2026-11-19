@@ -129,7 +129,7 @@ class GoogleSheetUpdate(Script):
         # 5.1 Перевірка хедера
         GS_PAGE_HEADER = GS_SERVICE.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID, range=f"{REGION_PAGE_NAME}!1:1").execute()
         GS_PAGE_HEADER_VALUES = GS_PAGE_HEADER.get("values")
-        self.log.debug(GS_PAGE_HEADER_VALUES)
+        self.log_debug(GS_PAGE_HEADER_VALUES)
 
         if not GS_PAGE_HEADER_VALUES:
            self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
