@@ -35,7 +35,7 @@ class GoogleSheetUpdate(Script):
             raise AbortScript(f"An error occurred: {error}")
 
     def format_row(self, headers, data):
-        
+
         missing = set(data) - set(headers)
         extra = set(headers) - set(data)
         
@@ -153,9 +153,9 @@ class GoogleSheetUpdate(Script):
         GS_PAGE_HEADERS = self.get_headers(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME) 
         
         if not GS_PAGE_HEADERS:
-           self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
-           self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
-        
+            self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
+            self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
+            GS_PAGE_HEADERS = self.get_headers(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
         # 6. Format new row that should be append
 
         NB_DATA = {
