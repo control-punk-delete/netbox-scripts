@@ -172,12 +172,18 @@ class GoogleSheetUpdate(Script):
             "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
             "isp": IP_ADDRESS_OBJECT.cf.get("isp", None),
             "asn": IP_ADDRESS_OBJECT.cf.get("asn", None),
+            "comment": "Додано автоматично з Netbox команди SOC"
         }
 
         row = self.format_row(GS_PAGE_HEADERS, NB_DATA)
 
         self.log_info(f"Row that should be append: {row}")
         self.append_row(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME, row)
+
+        IP_ADDRESS_OBJECT.tags.add("reported")
+        if commit:
+            IP_ADDRESS_OBJECT.save()
+            self.log_info(f"Tag reported added to ip address: {IP_ADDRESS_OBJECT.address}")
 
         
         
