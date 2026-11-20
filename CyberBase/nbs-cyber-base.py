@@ -34,6 +34,28 @@ class GoogleSheetUpdate(Script):
         except HttpError as error:
             raise AbortScript(f"An error occurred: {error}")
 
+    def format_row(self, headers, data):
+        missing = set(headers) - set(data)
+        extra = set(data) - set(headers)
+
+        if missing:
+            raise AbortScript(f"Missing data for headers: {missing}")
+
+        if extra:
+            self.log_warning(f"Warning: extra fields ignored: {extra}")
+
+        return [data.get(header, "") for header in headers]
+
+    def get_headers(self, gs_service, spreadsheet_id, page_name):
+        try:
+            response = gs_service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=f"'{page_name}'!1:1").execute()
+            headers = response.get("values", [[]])[0]
+            self.log_debug(headers)
+            return headers
+
+        except HttpError as error:
+            raise AbortScript(f"An error occurred during geting page header: {error}")
+        
 
     def create_header(self, gs_service, spreadsheet_id, page_name):
         try:
@@ -42,7 +64,6 @@ class GoogleSheetUpdate(Script):
         
         except HttpError as error:
             raise AbortScript(f"Error during added header row to page {page_name}: {error}")
-
 
     def create_gs_page(self, gs_service, spreadsheet_id, page_name):
         body = {
@@ -127,23 +148,24 @@ class GoogleSheetUpdate(Script):
             self.create_gs_page(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
 
         # 5.1 Перевірка хедера
-        GS_PAGE_HEADER = GS_SERVICE.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID, range=f"{REGION_PAGE_NAME}!1:1").execute()
-        GS_PAGE_HEADER_VALUES = GS_PAGE_HEADER.get("values")
-        self.log_debug(GS_PAGE_HEADER_VALUES)
-
-        if not GS_PAGE_HEADER_VALUES:
+        GS_PAGE_HEADERS = self.get_headers(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME) 
+        
+        if not GS_PAGE_HEADERS:
            self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
            self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
         
         # 6. Format new row that should be append
-        row = [ TENANT_OBJECT.cf.get("edrpou", None),
-                TENANT_OBJECT.description,
-                str(IP_ADDRESS_OBJECT.address).split("/")[0],
-                REGION_NAME,
-                'moniker',
-                'kontrol', 
-                'comment'
-                ]
+
+        NB_DATA = {
+            "edrpou": TENANT_OBJECT.cf.get("edrpou", None),
+            "org": TENANT_OBJECT.description or TENANT_OBJECT.name,
+            "region": REGION_NAME,
+            "ip": str(IP_ADDRESS_OBJECT.address).split("/")[0],
+            "moniker": "unknown",
+        }
+
+        row = self.format_row(GS_PAGE_HEADERS, NB_DATA)
+
         self.log_info(f"Row that should be append: {row}")
         self.append_row(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME, row)
 
