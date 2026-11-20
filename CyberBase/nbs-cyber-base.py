@@ -35,8 +35,10 @@ class GoogleSheetUpdate(Script):
             raise AbortScript(f"An error occurred: {error}")
 
     def format_row(self, headers, data):
-        missing = set(headers) - set(data)
-        extra = set(data) - set(headers)
+        
+        missing = set(data) - set(headers)
+        extra = set(headers) - set(data)
+        
 
         if missing:
             raise AbortScript(f"Missing data for headers: {missing}")
