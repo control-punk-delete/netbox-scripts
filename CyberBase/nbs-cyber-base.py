@@ -58,7 +58,6 @@ class GoogleSheetUpdate(Script):
         except HttpError as error:
             raise AbortScript(f"An error occurred during geting page header: {error}")
         
-
     def create_header(self, gs_service, spreadsheet_id, page_name):
         try:
             gs_service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=f"{page_name}!1:1", valueInputOption="RAW", body={"values": [['edrpou', 'org', 'ip', 'region', 'moniker', 'kontrol', 'comment']]}).execute()
@@ -172,8 +171,7 @@ class GoogleSheetUpdate(Script):
             "device full": IP_ADDRESS_OBJECT.cf.get("device_full", None),
             "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
             "isp": IP_ADDRESS_OBJECT.cf.get("isp", None),
-            "asn": IP_ADDRESS_OBJECT.cf.get("asn", None), 
-            "monicker": "unknown",
+            "asn": IP_ADDRESS_OBJECT.cf.get("asn", None),
         }
 
         row = self.format_row(GS_PAGE_HEADERS, NB_DATA)
