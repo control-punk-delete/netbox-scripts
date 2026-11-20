@@ -135,9 +135,15 @@ class GoogleSheetUpdate(Script):
         if not REGION_ID:
             raise AbortScript('Tenant do not belong to any Region')
         
+        # Формування назви сторінки.
+        if REGION_ID in ("ua-30", "ua-32"):
+            REGION_PAGE_NAME = "Київська область"
+
+        else:
+            REGION_PAGE_NAME = REGION_NAME + " ТУ"
 
         # 5. Перевірка сторінки регіону
-        REGION_PAGE_NAME = str(REGION_ID).upper() + ": " + REGION_NAME
+        
         self.log_info(f"Google Sheet page name: {REGION_PAGE_NAME}")
 
         GS_INFO = GS_SERVICE.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
@@ -163,7 +169,7 @@ class GoogleSheetUpdate(Script):
             "org": TENANT_OBJECT.description or TENANT_OBJECT.name,
             "region": REGION_NAME,
             "ip": str(IP_ADDRESS_OBJECT.address).split("/")[0],
-            "moniker": "unknown",
+            "moniker": "unknown",     
         }
 
         row = self.format_row(GS_PAGE_HEADERS, NB_DATA)
