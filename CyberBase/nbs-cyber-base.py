@@ -169,7 +169,11 @@ class GoogleSheetUpdate(Script):
             "org": TENANT_OBJECT.description or TENANT_OBJECT.name,
             "region": REGION_NAME,
             "ip": str(IP_ADDRESS_OBJECT.address).split("/")[0],
-            "moniker": "unknown",     
+            "device full": IP_ADDRESS_OBJECT.cf.get("device_full", None),
+            "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
+            "isp": IP_ADDRESS_OBJECT.cf.get("isp", None),
+            "asn": IP_ADDRESS_OBJECT.cf.get("asn", None), 
+            "monicker": "unknown",
         }
 
         row = self.format_row(GS_PAGE_HEADERS, NB_DATA)
