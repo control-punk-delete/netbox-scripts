@@ -41,7 +41,7 @@ class GoogleSheetUpdate(Script):
         
 
         if missing:
-            raise AbortScript(f"Missing data for headers: {missing}")
+            self.log_warning(f"Missing data for headers: {missing}")
 
         if extra:
             self.log_warning(f"Warning: extra fields ignored: {extra}")
