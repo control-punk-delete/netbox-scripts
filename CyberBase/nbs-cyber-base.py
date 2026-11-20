@@ -60,7 +60,7 @@ class GoogleSheetUpdate(Script):
         
     def create_header(self, gs_service, spreadsheet_id, page_name):
         try:
-            gs_service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=f"{page_name}!1:1", valueInputOption="RAW", body={"values": [['edrpou', 'org', 'ip', 'region', 'moniker', 'kontrol', 'comment']]}).execute()
+            gs_service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=f"{page_name}!1:1", valueInputOption="RAW", body={"values": [['edrpou', 'org', 'region', 'city', 'ip', 'asn', 'device_full', 'device_vendor', 'monicker', 'kontrol', 'comment', 'person', 'contact', 'email']]}).execute()
             self.log_success(f"Page header successfully added to page: {page_name}")
         
         except HttpError as error:
@@ -168,7 +168,7 @@ class GoogleSheetUpdate(Script):
             "org": TENANT_OBJECT.description or TENANT_OBJECT.name,
             "region": REGION_NAME,
             "ip": str(IP_ADDRESS_OBJECT.address).split("/")[0],
-            "device full": IP_ADDRESS_OBJECT.cf.get("device_full", None),
+            "device_full": IP_ADDRESS_OBJECT.cf.get("device_full", None),
             "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
             "isp": IP_ADDRESS_OBJECT.cf.get("isp", None),
             "asn": IP_ADDRESS_OBJECT.cf.get("asn", None),
