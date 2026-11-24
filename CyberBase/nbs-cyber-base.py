@@ -25,7 +25,7 @@ class GoogleSheetUpdate(Script):
         try:
             result = gs_service.spreadsheets().values().append(
                 spreadsheetId=spreadsheet_id,
-                range=f"{page_name}!A1",
+                range=f"{page_name}!A:Z",
                 valueInputOption="RAW",
                 insertDataOption="INSERT_ROWS",
                 body=body
