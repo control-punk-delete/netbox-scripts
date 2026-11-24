@@ -1,7 +1,8 @@
 from extras.scripts import Script
 from utilities.exceptions import AbortScript
-from tenancy.models import Tenant
+from tenancy.models import Tenant, Contact
 from ipam.models import IPAddress
+from tenancy.choices import ContactPriorityChoices 
 
 # Google Libs
 import json
@@ -161,7 +162,31 @@ class GoogleSheetUpdate(Script):
             self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
             self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
             GS_PAGE_HEADERS = self.get_headers(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
-        # 6. Format new row that should be append
+
+        # 6. Contact info extract
+                    
+        # Отримання даних про контактну особу даного тенанта
+        CONTACT_ASSIGMENT_OBJECT = TENANT_OBJECT.contacts.filter(priority=ContactPriorityChoices.PRIORITY_PRIMARY).first()
+        
+        if not CONTACT_ASSIGMENT_OBJECT:
+            contact_name = None
+            contact_phone = None
+            contact_email = None
+            
+        else:
+            CONTACT_OBJECT = Contact.objects.get(pk=CONTACT_ASSIGMENT_OBJECT.contact_id)
+
+            if not CONTACT_OBJECT:
+                contact_name = None
+                contact_phone = None
+                contact_email = None
+                
+            else:
+                contact_name = CONTACT_OBJECT.name
+                contact_phone = CONTACT_OBJECT.phone
+                contact_email = CONTACT_OBJECT.email
+        # 7. Format new row that should be append
+
 
         NB_DATA = {
             "edrpou": TENANT_OBJECT.cf.get("edrpou", None),
@@ -172,6 +197,9 @@ class GoogleSheetUpdate(Script):
             "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
             "isp": IP_ADDRESS_OBJECT.cf.get("isp", None),
             "asn": IP_ADDRESS_OBJECT.cf.get("asn", None),
+            "person": contact_name,
+            "contact": contact_phone,
+            "email": contact_email,
             "comment": "Додано автоматично з Netbox команди SOC"
         }
 
