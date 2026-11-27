@@ -162,6 +162,15 @@ class GoogleSheetUpdate(Script):
             self.log_warning(f"Page {REGION_PAGE_NAME} missing header row")
             self.create_header(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
             GS_PAGE_HEADERS = self.get_headers(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME)
+        full_address = TENANT_OBJECT.cf.get("full_address", None)
+        self.log_debug(f"Extracted full address: {full_address}")
+        if full_address:
+            city = full_address.split(",")[-3]
+            self.log_debug(f"Extracted city from address: {city}")
+
+        else:
+            self.log_debug("Full address is not exist, cant get a city")
+            city = None
 
         # 6. Contact info extract
                     
@@ -192,6 +201,7 @@ class GoogleSheetUpdate(Script):
             "edrpou": TENANT_OBJECT.cf.get("edrpou", None),
             "org": TENANT_OBJECT.description or TENANT_OBJECT.name,
             "region": REGION_NAME,
+            "city": city,
             "ip": str(IP_ADDRESS_OBJECT.address).split("/")[0],
             "device_full": IP_ADDRESS_OBJECT.cf.get("device_full", None),
             "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
