@@ -196,6 +196,7 @@ class GoogleSheetUpdate(Script):
             "device_full": IP_ADDRESS_OBJECT.cf.get("device_full", None),
             "device_vendor": IP_ADDRESS_OBJECT.cf.get("device_vendor", None),
             "isp": IP_ADDRESS_OBJECT.cf.get("isp", None),
+            "monicker": IP_ADDRESS_OBJECT.cf.get("monicker", None),
             "asn": IP_ADDRESS_OBJECT.cf.get("asn", None),
             "person": contact_name,
             "contact": contact_phone,
