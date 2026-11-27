@@ -18,7 +18,7 @@ class DNSZoneReconciliation(Script):
         # 1. Event Rule - New DNS Zone created
 
         NEW_DNS_ZONE_ID = data.get("id")
-        NEW_DNS_ZONE_OBJECT = Zone.objects.get(pk=zone_id)
+        NEW_DNS_ZONE_OBJECT = Zone.objects.get(pk=NEW_DNS_ZONE_ID)
 
         NEW_DNS_ZONE = NEW_DNS_ZONE_OBJECT.name
         self.log_info( f"Target Zone: {NEW_DNS_ZONE}")
