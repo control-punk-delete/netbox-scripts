@@ -32,5 +32,5 @@ class DNSZoneReconciliation(Script):
 
         while zone_tier != 2:
             zone_tier -= 1
-            self.log_info("Posible zone to check: ",".".join(NEW_DNS_ZONE_SPLITTED[zone_tier_start - zone_tier:]))
+            self.log_info("Posible zone to check: ",".".join(NEW_DNS_ZONE_SPLITTED[NEW_DNS_ZONE_TIER - zone_tier:]))
 
