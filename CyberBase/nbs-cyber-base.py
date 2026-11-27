@@ -208,7 +208,7 @@ class GoogleSheetUpdate(Script):
         self.log_info(f"Row that should be append: {row}")
         self.append_row(GS_SERVICE, SPREADSHEET_ID, REGION_PAGE_NAME, row)
 
-        IP_ADDRESS_OBJECT.tags.add("reported")
+        IP_ADDRESS_OBJECT.tags.add("tz-reported")
         if commit:
             IP_ADDRESS_OBJECT.save()
             self.log_info(f"Tag reported added to ip address: {IP_ADDRESS_OBJECT.address}")
