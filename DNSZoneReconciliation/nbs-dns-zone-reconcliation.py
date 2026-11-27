@@ -32,5 +32,12 @@ class DNSZoneReconciliation(Script):
 
         while zone_tier != 2:
             zone_tier -= 1
-            self.log_info("Posible zone to check: ",".".join(NEW_DNS_ZONE_SPLITTED[NEW_DNS_ZONE_TIER - zone_tier:]))
+            CANDIDATE = ".".join(NEW_DNS_ZONE_SPLITTED[NEW_DNS_ZONE_TIER - zone_tier:])
+            self.log_info(f"Posible zone to check: {CANDIDATE}")
+
+            # Для кандидата зони, отримати перелік Рекордів
+            # Для кожного Рекорда перевірити чи він 
+            # 1. ІДЕНТИЧНИЙ до нової зони - видалити
+            # 2. Закінчується на поточну зону  - переасайн
+
 
