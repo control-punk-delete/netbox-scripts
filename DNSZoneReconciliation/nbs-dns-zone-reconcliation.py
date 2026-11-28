@@ -37,7 +37,7 @@ class DNSZoneReconciliation(Script):
 
             CANDIDATE_DNS_ZONE_OBJECTS = Zone.objects.filter(name=CANDIDATE)
             if CANDIDATE_DNS_ZONE_OBJECTS:
-                self.log_info(f"Candidates DNS Zone { CANDIDATE } exist {len(CANDIDATE_DNS_ZONE_OBJECTS)}")
+                self.log_info(f"Candidates DNS Zone { CANDIDATE } exist {len(CANDIDATE_DNS_ZONE_OBJECTS)} - {type(CANDIDATE_DNS_ZONE_OBJECTS)}")
             else:
                 self.log_info(f"The are no DNS Zone in netbox for candidate {CANDIDATE}")
 
