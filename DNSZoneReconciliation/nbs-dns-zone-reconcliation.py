@@ -40,6 +40,16 @@ class DNSZoneReconciliation(Script):
             if CANDIDATE_DNS_ZONE_OBJECT:
                 self.log_info(f"Candidate {CANDIDATE} zone exist with id: {CANDIDATE_DNS_ZONE_OBJECT.id}", CANDIDATE_DNS_ZONE_OBJECT)
 
+                CANDIDATE_RECORDS = Record.objects.filter(zone_id=CANDIDATE_DNS_ZONE_OBJECT.id, type="A")
+
+                if not CANDIDATE_RECORDS:
+                    self.log_info(f"The are no DNS Records type A exist")
+                
+                else:
+                    self.log_info(f"DNS Records: {CANDIDATE_RECORDS}")
+
+                
+
 
 
 
