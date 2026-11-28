@@ -21,7 +21,7 @@ class DNSZoneReconciliation(Script):
         NEW_DNS_ZONE_OBJECT = Zone.objects.get(pk=NEW_DNS_ZONE_ID)
 
         NEW_DNS_ZONE = NEW_DNS_ZONE_OBJECT.name
-        self.log_info( f"Target Zone: {NEW_DNS_ZONE}")
+        self.log_info( f"Target Zone: {NEW_DNS_ZONE}", NEW_DNS_ZONE_OBJECT)
 
         NEW_DNS_ZONE_SPLITTED = NEW_DNS_ZONE.split(".")
     
@@ -35,9 +35,17 @@ class DNSZoneReconciliation(Script):
             CANDIDATE = ".".join(NEW_DNS_ZONE_SPLITTED[NEW_DNS_ZONE_TIER - zone_tier:])
             self.log_info(f"Posible zone to check: {CANDIDATE}")
 
-            CANDIDATE_DNS_ZONE_OBJECTS = Zone.objects.filter(name=CANDIDATE)
-            if CANDIDATE_DNS_ZONE_OBJECTS:
-                self.log_info(f"Candidates DNS Zone { CANDIDATE } exist {len(CANDIDATE_DNS_ZONE_OBJECTS)} - {type(CANDIDATE_DNS_ZONE_OBJECTS)}")
+            CANDIDATE_DNS_ZONE_OBJECT = Zone.objects.filter(name=CANDIDATE).first()
+
+            if CANDIDATE_DNS_ZONE_OBJECT:
+                self.log_info(f"Candidate {CANDIDATE} zone exist with id: {CANDIDATE_DNS_ZONE_OBJECT.id}", CANDIDATE_DNS_ZONE_OBJECT)
+
+
+
+
+
+
+
             else:
                 self.log_info(f"The are no DNS Zone in netbox for candidate {CANDIDATE}")
 
