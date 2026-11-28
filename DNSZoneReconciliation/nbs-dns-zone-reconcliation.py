@@ -1,7 +1,7 @@
 
 from extras.scripts import Script
 from netbox_dns.models import (Zone, Record)
-from netbox_plugin_dns.choices import RecordTypeChoices  
+from netbox_plugin_dns.choices import (RecordTypeChoices)
 
 
 class DNSZoneReconciliation(Script):
