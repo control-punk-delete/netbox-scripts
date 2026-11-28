@@ -1,6 +1,7 @@
 
 from extras.scripts import Script
 from netbox_dns.models import (Zone, Record)
+from netbox_plugin_dns.choices import RecordTypeChoices  
 
 
 class DNSZoneReconciliation(Script):
@@ -40,7 +41,7 @@ class DNSZoneReconciliation(Script):
             if CANDIDATE_DNS_ZONE_OBJECT:
                 self.log_info(f"Candidate {CANDIDATE} zone exist with id: {CANDIDATE_DNS_ZONE_OBJECT.id}", CANDIDATE_DNS_ZONE_OBJECT)
 
-                CANDIDATE_RECORDS = Record.objects.filter(zone_id=CANDIDATE_DNS_ZONE_OBJECT.id, type="A")
+                CANDIDATE_RECORDS = Record.objects.filter(zone_id=CANDIDATE_DNS_ZONE_OBJECT.id, type=RecordTypeChoices.A)
 
                 if not CANDIDATE_RECORDS:
                     self.log_info(f"The are no DNS Records type A exist")
