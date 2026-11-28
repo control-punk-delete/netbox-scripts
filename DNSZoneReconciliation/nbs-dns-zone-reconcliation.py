@@ -35,6 +35,12 @@ class DNSZoneReconciliation(Script):
             CANDIDATE = ".".join(NEW_DNS_ZONE_SPLITTED[NEW_DNS_ZONE_TIER - zone_tier:])
             self.log_info(f"Posible zone to check: {CANDIDATE}")
 
+            CANDIDATE_DNS_ZONE_OBJECTS = Zone.objects.filter(name=CANDIDATE)
+            if CANDIDATE_DNS_ZONE_OBJECTS:
+                self.log_info(f"Candidates DNS Zone { CANDIDATE } exist {len(CANDIDATE_DNS_ZONE_OBJECTS)}")
+            else:
+                self.log_info(f"The are no DNS Zone in netbox for candidate {CANDIDATE}")
+
             # Для кандидата зони, отримати перелік Рекордів
             # Для кожного Рекорда перевірити чи він 
             # 1. ІДЕНТИЧНИЙ до нової зони - видалити
